@@ -7,25 +7,28 @@
 -->
 <resources>
 
-    <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
+    <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped.
+         CHiQ L43G7P Pro: the owner uses Netflix and YouTube. fill_dock fills the two free slots with
+         the first grid apps so the dock shows no gap. -->
     <string-array name="dock_apps">
         <item>com.netflix.ninja</item>
-        <item>com.amazon.amazonvideo.livingroom</item>
         <item>com.google.android.youtube.tv</item>
-        <item>in.startv.hotstar</item>
     </string-array>
     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
          the first grid apps, so the dock never shows a gap. false leaves them empty (#162); a theme can
          set "fill_dock": false. -->
     <bool name="fill_dock">true</bool>
 
-    <!-- Apps never shown as tiles (e.g. the Live TV app, which the Inputs menu already covers). -->
+    <!-- Apps never shown as tiles. The Live TV app is covered by the Inputs menu, and the Homwee
+         file explorer / image player are vendor leftovers that clutter the grid. -->
     <string-array name="hidden_apps">
         <item>com.mediatek.wwtv.tvcenter</item>
-        <item>com.mitv.gallery</item>
+        <item>com.homwee.mmp.fileexplorer</item>
+        <item>com.homwee.mmp.imageplayer</item>
     </string-array>
 
-    <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu. Leave empty to omit. -->
+    <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu.
+         On this osaka board it has the LEANBACK_LAUNCHER entry .nav.TurnkeyUiMainActivity. -->
     <string name="live_tv_package" translatable="false">com.mediatek.wwtv.tvcenter</string>
 
     <!-- Some TVs give their Live TV app no leanback entry point at all, so `live_tv_package` above

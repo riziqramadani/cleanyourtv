@@ -1,0 +1,6 @@
+package:com.amazon.amazonvideo.livingroom
+package:com.google.android.marvin.talkback
+package:com.google.android.youtube.tvmusic
+package:com.mediatek.androidbox
+package:com.mediatek.bootlogoservice
+package:com.mediatek.tv.oneworld.tvcenteroverlay

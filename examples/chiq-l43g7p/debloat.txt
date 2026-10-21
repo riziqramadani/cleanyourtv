@@ -1,0 +1,78 @@
+# CHiQ L43G7P Pro ("Zea TV"), Changhong AI PONT, device osaka, product DVB86.
+# Google TV 14 (API 34), firmware UKNV.260603.001, MediaTek mt5867, ~1 GB RAM.
+# Same board/firmware family as examples/aiwa-ai-pont-sa (osaka, UKNV.260603.001) and
+# close to examples/chiq-gtvu65 (dangni) and examples/rca-ai-pont (redwood).
+#
+# Apply:   TV_HOST=192.168.1.7 tools/disable.sh examples/chiq-l43g7p/debloat.txt
+# Undo:    TV_HOST=192.168.1.7 tools/restore.sh examples/chiq-l43g7p/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED for user 0, never uninstalled. Comment out any line to keep it.
+#
+# Stock launcher: com.google.android.apps.tv.launcherx (pass it to restore.sh).
+# Live TV: com.mediatek.wwtv.tvcenter (has the LEANBACK_LAUNCHER entry: .nav.TurnkeyUiMainActivity).
+# HDMI/AV passthrough: com.google.android.tv.inputplayer/.player.PassthroughPlayerActivity.
+#
+# Owner's choices (this session): keep Netflix + YouTube; disable Vidio and Play Movies.
+# Keep voice/Assistant (katniss), Chromecast (mediashell) and firmware/app updates. No ad-blocking DNS.
+#
+# KEEP, even though some names look like bloat (verified read-only with dumpsys package on this set):
+# - com.mediatek.tvinput: HDMI/AV/tuner input services (BIND_TV_INPUT). Disabling blacks the inputs.
+# - com.mediatek.tv.service, com.google.android.tv.inputplayer: the input/passthrough player.
+# - com.mediatek.tv.factorykey: registers a TvInputService (FactoryKeyService, BIND_TV_INPUT) despite
+#   the "factory" name. Do NOT launch it either (factory-mode risk).
+# - com.homwee.factory: has InputBroadcastReceiver + PQ services (handles input-key broadcasts). Keep,
+#   never launch (factory-mode risk).
+# - com.mediatek.wwtv.setupwizard: GlobalKeyReceiver + satellite/tuner DB. Keep (key + tuner handling).
+# - com.mediatek.autopair: Bluetooth remote pairing + volume receiver.
+# - com.google.android.tv.remote.service: remote control + mic (INJECT_EVENTS, CAPTURE_AUDIO_OUTPUT).
+# - com.homwee.dynamicbacklight (picture), com.homwee.synckey, com.mediatek.wwtv.tvcenter (Live TV).
+# - com.homwee.upgrade, com.homwee.dmt.upgrade: firmware/vendor updates (owner keeps updates).
+# - com.google.android.gms, com.android.vending: Play services + Store.
+# - com.mediatek.android.leanbacklauncher.partnercustomizer: left enabled. On the Android 11 CHiQ,
+#   disabling it crash-loops com.mediatek.tv.service after a reboot; not reboot-tested off on osaka.
+# - com.netflix.ninja, com.google.android.youtube.tv: the two streaming apps the owner uses.
+# - com.google.android.katniss (voice), com.google.android.apps.mediashell (Chromecast): kept by choice.
+#
+# Quirks on this firmware (see examples/aiwa-ai-pont-sa and docs/TROUBLESHOOTING.md):
+# - Wireless debugging only (no plaintext 5555 until `adb tcpip 5555`). ro.adb.secure=1.
+# - Home claimants: launcherx/.home.HomeActivity (priority 2), setupwraith/.MainActivity and
+#   .RecoveryActivity (priority 1), tv.settings/.system.FallbackHome (-1000). setupwraith must be
+#   disabled with launcherx or Home lands on the setup wizard's RecoveryActivity. Its .RecoveryActivity
+#   component cannot be disabled alone (SecurityException), so the whole package goes.
+# - setupwraith may own the Wi-Fi saved during first setup; disable.sh checks and skips it if so.
+#   On this set, forget+rejoin the Wi-Fi in Settings first if disable.sh refuses it.
+# - HDMI and Live TV screenshots come out black (protected video layer); check topResumedActivity.
+
+# --- Content recognition (reports what is on screen) ---
+tv.anoki.acr.anokiacroptin
+
+# --- Telemetry, ad services and partner auto-installs ---
+com.android.adservices.api
+com.google.android.feedback
+com.android.tv.feedbackconsent
+com.google.android.partnersetup
+
+# --- Ambient/recommendation screensaver (mixes recommendations into the backdrop) ---
+com.google.android.apps.tv.dreamx
+
+# --- Changhong / Homwee store, help and screen-share duplicates ---
+com.homwee.store
+com.homwee.help
+com.homwee.multiscreenshare
+com.homwee.mmp.screenshare
+
+# --- Preloaded apps not used ---
+com.google.android.play.games
+com.google.android.syncadapters.calendar
+
+# --- Streaming / content apps the owner does not use (keep Netflix + YouTube) ---
+com.vidio.android.tv
+com.google.android.videos
+
+# --- Stock home. Disabled only after the new launcher is installed and set as Home. ---
+# Its RecoveryActivity otherwise takes Home. disable.sh checks Wi-Fi ownership before disabling it.
+com.google.android.tungsten.setupwraith
+
+# Stock launcher, replaced by launcher/. Left commented so disable.sh does not remove Home first;
+# launcher/build-and-install.sh disables it after the new home is set, and restore.sh (with the
+# package argument above) brings it back.
+# com.google.android.apps.tv.launcherx
